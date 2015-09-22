@@ -1,0 +1,111 @@
+.main-content {
+    margin-top: 80px;
+    .content-header {
+        margin-bottom: 20px;
+    }
+    .header-content {
+        display: flex;
+        .hero-list {
+            margin: 0 auto;
+            ul {
+                list-style-type: none;
+                li {
+                    float: left;
+                    padding: 20px;
+                    background-color: #E9E9E9;
+                    border: 1px solid grey;
+                    margin-left: 5px;
+                    margin-right: 5px;
+                    &:hover {
+                        background-color: aqua;
+                    }
+                    &:focus {
+                        background-color: rebeccapurple;
+                    }
+                }
+            }
+        }
+    }
+    .left-content {
+        width: 50%;
+        float: left;
+        .hero-list {
+            margin-top: 25px;
+            ul {
+                list-style-type: none;
+                li {
+                    border-bottom: 1px solid lightgrey;
+                    padding: 10px 0;
+                    &:hover {
+                        background-color: aliceblue;
+                    }
+                }
+            }
+        }
+    }
+    .right-content {
+        width: 50%;
+        float: right;
+        .items-content {
+            position: relative;
+            
+            div {
+                position: absolute;
+            }
+            @right: 285px;
+            @left: 85px;
+            @middle: (@right + @left) / 2;
+            .head {
+                left: @middle;
+            }
+            .torso {
+                top: 145px;
+                left: @middle;
+            }
+            .waist {
+                top: 330px;
+                left: @middle;
+            }
+            .shoulders {
+                top: 100px;
+                left: @left;
+            }
+            .neck {
+                top: 100px;
+                left: @right;
+            }
+            .hands {
+                top: 250px;
+                left: @left;
+            }
+            .bracers {
+                top: 250px;
+                left: @right;
+            }
+            .feet {
+                top: 415px;
+                left: @middle;
+            }
+            .rightFinger {
+                top: 400px;
+                left: @right;
+            }
+            .leftFinger {
+                top: 400px;
+                left: @left;
+            }
+            .mainHand {
+                top: 500px;
+                left: @left;
+            }
+            .offHand {
+                top: 500px;
+                left: @right;
+            }
+            .legs {
+                top: 560px;
+                left: @middle;
+            }
+        }
+    }
+}

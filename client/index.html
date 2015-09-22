@@ -1,0 +1,84 @@
+<!doctype html>
+<html ng-app="d3dps">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Diablo 3 DPS-Calculator</title>
+
+    <!-- bower:css -->
+    <!-- endbower -->
+
+    <!-- inject:css -->
+    <!-- endinject -->
+
+    <!-- bower:js -->
+    <!-- endbower -->
+
+    <!-- inject:js -->
+    <!-- endinject -->
+</head>
+
+<body ng-controller="Home as vm">
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+
+                <a class="navbar-brand" href="index.html">D3DPS</a>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="index.html">Home</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container main-content">
+        <div class="content-header">
+            <div>
+                Type here your Battlenet Tag. "name-1111, or name#1111 or name 1111".
+            </div>
+            <div class="input-group">
+                <span class="input-group-btn">
+                       <button class="btn btn-default" type="button" ng-click="vm.battleNetTag = 'b1ubb#2753'; vm.loadProfile()">Search!</button>
+                      </span>
+                <input type="text" class="form-control" placeholder="name#1234, name-1234 or name 1234" ng-model="vm.battleNetTag" ng-keypress="($event.which === 13)?vm.loadProfile():0">
+            </div>
+        </div>
+
+        <div class="header-content">
+            <img data-loading src="/assets/img/cock-loading.gif" ng-show="vm.areHeroesLoading()" />
+            <div class="hero-list">
+                <ul>
+                    <li ng-repeat="hero in vm.heroes" ng-click="vm.loadHero(hero)" ng-class="">
+                        {{hero.name}}
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="left-content">
+            <p>
+                Maindhand: {{vm.dps.mainHand}}
+            </p>
+            <p ng-repeat="(key, value) in vm.dps.elemental">{{key}}: {{value}}</p>
+        </div>
+
+        <div class="right-content">
+
+            <div class="items-content">
+                <!--            <h2>items</h2>-->
+                <div class="{{key}}" ng-repeat="(key, value) in vm.hero.items" style="background-color: {{value.displayColor}}">
+                    <a href="{{vm.TooltipUrl(value.tooltipParams)}}">
+                        <img ng-src="{{vm.ImageUrl(value.icon)}}">
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
