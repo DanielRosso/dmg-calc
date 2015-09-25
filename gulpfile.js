@@ -9,7 +9,7 @@ var gulp = require('gulp')
   , install = require("gulp-install")
   , sync = require('gulp-sync')(gulp)
   , htmlInjector = require('bs-html-injector')
-  , watch = require('gulp-watch')
+//  , watch = require('gulp-watch')
   , spa = require('browser-sync-spa');
 
 var paths =
@@ -19,6 +19,10 @@ var paths =
     tmp: "./.tmp/",
     assets: "./client/assets/"
   }
+
+function isOnlyChange(event) {
+  return event.type === 'changed';
+}
 
 gulp.task('install', function () {
   return gulp.src(['tsd.json', 'bower.json'])
@@ -32,7 +36,7 @@ gulp.task('serve', ['inject'], function () {
 
   browserSync.init({
     server: {
-      // baseDir: [paths.tmp, paths.src]
+      // baseDir: [paths.tmp, paths.client]
       baseDir: ["./"]
     }
     , startPath: paths.tmp + "index.html"
@@ -46,7 +50,7 @@ gulp.task('serve', ['inject'], function () {
     ]
   });
 
-  gulp.watch(paths.assets + "css/**/*.less", ['less']);
+  gulp.watch(paths.assets + "css/**/*.less", { readhDelay: 2000 }, ['less']);
   gulp.watch(paths.tmp + "*.html", htmlInjector);
   // gulp.watch(paths.client + "/*.html", ['copy:html-tmp']);
   gulp.watch(paths.client + "/*.html", ['html-watch']);
