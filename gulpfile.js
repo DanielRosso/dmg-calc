@@ -9,8 +9,10 @@ var gulp = require('gulp')
   , install = require("gulp-install")
   , sync = require('gulp-sync')(gulp)
   , htmlInjector = require('bs-html-injector')
-  , watch = require('gulp-watch')
-  , spa = require('browser-sync-spa');
+//  , watch = require('gulp-watch')
+  , spa = require('browser-sync-spa')
+  , plumber = require('gulp-plumber')
+  , concat = require('gulp-concat');
 
 var paths =
   {
@@ -20,86 +22,83 @@ var paths =
     assets: "./client/assets/"
   }
 
+function isOnlyChange(event) {
+  return event.type === 'changed';
+}
+
 gulp.task('install', function () {
   return gulp.src(['tsd.json', 'bower.json'])
     .pipe(install());
 });
 
-gulp.task('serve', ['inject'], function () {
-  browserSync.use(spa({
-    selector: "[ng-app]" // Only needed for angular apps
-  }));
-
+gulp.task('serve', ['watch'], function () {
   browserSync.init({
     server: {
-      // baseDir: [paths.tmp, paths.src]
-      baseDir: ["./"]
-    }
-    , startPath: paths.tmp + "index.html"
-    , plugins: [
-      {
-        module: "bs-html-injector"
-        , options: {
-          files: [paths.tmp + "**/*.html"]
-        }
+      baseDir: [paths.tmp, paths.client]
+      , index: paths.tmp + 'index.html'
+      , routes: {
+        '/bower_components': 'bower_components'
       }
-    ]
+    },
+    startPath: 'index.html'
   });
-
-  gulp.watch(paths.assets + "css/**/*.less", ['less']);
-  gulp.watch(paths.tmp + "*.html", htmlInjector);
-  // gulp.watch(paths.client + "/*.html", ['copy:html-tmp']);
-  gulp.watch(paths.client + "/*.html", ['html-watch']);
 });
 
-gulp.task('html-watch', ['copy-html'], browserSync.reload);
+gulp.task('watch', ['inject'], function () {
+  gulp.watch(path.join(paths.client, '/*.html'), ['inject'], browserSync.reload);
 
-gulp.task('copy-html', function () {
-  var target = gulp.src('./client/index.html');
-  var injectStyles = gulp
-    .src(paths.tmp + '/*.css', { read: false });
+  gulp.watch(paths.client + "**/*.less", function (event) {
+    if (isOnlyChange(event)) {
+      gulp.start('less');
+    } else {
+      gulp.start('inject');
+    }
+  });
 
-  var injectScripts = gulp
-    .src(paths.clientApp + '**/*.js')
+  gulp.watch(paths.clientApp + "**/*.js", function (event) {
+    if (isOnlyChange(event)) {
+      gulp.start('scripts');
+    } else {
+      gulp.start('inject')
+    }
+  });
+});
+
+gulp.task('inject', ['less'], function () {
+  var injectStyles = gulp.src(
+    paths.tmp + '**/*.css'
+    , { read: false });
+
+  var injectScripts = gulp.src([
+    paths.client + '**/*.js',
+    "!client/assets/libs/tooltip.js"
+  ])
     .pipe(angularFileSort());
 
-  var injectLibs = gulp.src(paths.assets + "libs/d3.tooltips.js");
+  var injectOptions = {
+    ignorePath: ['.tmp', 'client'],
+  };
 
-  return target
-    .pipe(inject(injectStyles))
-    .pipe(inject(injectScripts))
-    .pipe(inject(injectLibs))
-    .pipe(wiredep()) //for bower dep
-    .pipe(gulp.dest(paths.tmp));
-})
+  return gulp.src(paths.client + '*.html')
+    .pipe(inject(injectStyles, injectOptions))
+    .pipe(inject(injectScripts, injectOptions))
+    .pipe(wiredep())
+    .pipe(gulp.dest(paths.tmp))
+    .pipe(browserSync.stream())
+});
+
+gulp.task('scripts', function () {
+  return gulp.src(paths.clientApp + "**/*.js")
+    .pipe(browserSync.reload)
+});
 
 gulp.task('less', function () {
   return gulp
     .src(paths.assets + '/css/less/**/*.less')
-    .pipe(less({
-      paths: [path.join(__dirname, 'less', 'includes')]
-    }))
+    .pipe(concat('styles.less'))
+    .pipe(less())
     .pipe(gulp.dest(paths.tmp))
     .pipe(browserSync.stream());
-});
-
-gulp.task('inject', sync.sync(['clean', 'less']), function () {
-  var target = gulp.src('./client/index.html');
-  var injectStyles = gulp
-    .src(paths.tmp + '/*.css', { read: false });
-
-  var injectScripts = gulp
-    .src(paths.clientApp + '**/*.js')
-    .pipe(angularFileSort());
-
-  var injectLibs = gulp.src(paths.assets + "libs/d3.tooltips.js");
-
-  return target
-    .pipe(inject(injectStyles))
-    .pipe(inject(injectScripts))
-    .pipe(inject(injectLibs))
-    .pipe(wiredep()) //for bower dep
-    .pipe(gulp.dest(paths.tmp));
 });
 
 gulp.task('clean', function () {
