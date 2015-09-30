@@ -1,7 +1,4 @@
 # dmg-calc
 
-https://david-dm.org/danielrosso/dmg-calc.svg
-
-### David
-[![Dependency Status](https://david-dm.org/danielrosso/dmg-calc.svg)](https://david-dm.org/danielrosso/dmg-calc)
-[![devDependency Status](https://david-dm.org/danielrosso/dmg-calc/dev-status.svg)](https://david-dm.org/danielrosso/dmg-calc#info=devDependencies)
+[![Gemnasium](https://img.shields.io/gemnasium/DanielRosso/dmg-calc.svg?style=flat-square)]()
+[![David](https://img.shields.io/david/dev/DanielRosso/dmg-calc.svg?style=flat-square)]()

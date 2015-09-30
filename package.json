@@ -3,10 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "gulpfile.js",
-  "dependencies": {
-    "angular": "~1.4.5",
-    "jquery": "~2.1.4"
-  },
   "devDependencies": {
     "bower": "^1.5.2",
     "browser-sync": "^2.9.3",
