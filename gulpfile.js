@@ -3,7 +3,6 @@ var gulp = require('gulp')
   , path = require('path')
   , inject = require('gulp-inject')
   , browserSync = require('browser-sync').create()
-  , clean = require('gulp-clean')
   , wiredep = require('wiredep').stream
   , angularFileSort = require('gulp-angular-filesort')
   , install = require("gulp-install")
@@ -12,7 +11,8 @@ var gulp = require('gulp')
 //  , watch = require('gulp-watch')
   , spa = require('browser-sync-spa')
   , plumber = require('gulp-plumber')
-  , concat = require('gulp-concat');
+  , concat = require('gulp-concat')
+  , del = require('del');
 
 var paths =
   {
@@ -64,7 +64,7 @@ gulp.task('watch', ['inject'], function () {
   });
 });
 
-gulp.task('inject', ['less'], function () {
+gulp.task('inject', ['less', 'css'], function () {
   var injectStyles = gulp.src(
     paths.tmp + '**/*.css'
     , { read: false });
@@ -84,17 +84,24 @@ gulp.task('inject', ['less'], function () {
     .pipe(inject(injectScripts, injectOptions))
     .pipe(wiredep())
     .pipe(gulp.dest(paths.tmp))
-    .pipe(browserSync.stream())
+    .pipe(browserSync.stream());
 });
 
 gulp.task('scripts', function () {
   return gulp.src(paths.clientApp + "**/*.js")
-    .pipe(browserSync.reload)
+    .pipe(browserSync.reload);
 });
+
+gulp.task('css', function () {
+  return gulp
+    .src(paths.assets + '**/*.css')
+    .pipe(gulp.dest(paths.tmp));
+})
 
 gulp.task('less', function () {
   return gulp
     .src(paths.assets + '/css/less/**/*.less')
+    .pipe(plumber())
     .pipe(concat('styles.less'))
     .pipe(less())
     .pipe(gulp.dest(paths.tmp))
@@ -102,6 +109,5 @@ gulp.task('less', function () {
 });
 
 gulp.task('clean', function () {
-  return gulp.src(paths.tmp, { read: false })
-    .pipe(clean());
+  return del(paths.tmp);
 });
