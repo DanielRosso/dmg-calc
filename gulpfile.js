@@ -20,7 +20,8 @@ var gulp = require('gulp')
   , useref = require('gulp-useref')
   , minifyHTML = require('gulp-minify-html')
   , size = require('gulp-size')
-  , filter = require('gulp-filter');
+  , filter = require('gulp-filter')
+  , ghPages = require('gulp-gh-pages');
 
 var paths =
   {
@@ -38,6 +39,11 @@ function isOnlyChange(event) {
 gulp.task('install', function () {
   return gulp.src(['tsd.json', 'bower.json'])
     .pipe(install());
+});
+
+gulp.task('deploy', function() {
+  return gulp.src('./dist/**/*')
+    .pipe(ghPages());
 });
 
 gulp.task('serve', ['watch'], function () {
