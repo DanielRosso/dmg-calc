@@ -10,8 +10,7 @@
     function heroService($http, $q, urlService) {
         var service = {
             getHeroModel: getHeroModel,
-            calculateMaindHandDmg: calculateMaindHandDmg,
-            calculateElementalDmg: calculateElementalDmg
+            calculateDPS: calculateDPS
         };
 
         return service;
@@ -61,8 +60,23 @@
 
             return defer.promise;
         }
+        
+        function calculateDPS(heroModel) {
+            var dpsModel = {
+                Mainhand: 0,
+                Lightning: 0,
+                Cold: 0,
+                Holy: 0,
+                Arcane: 0,
+                Fire: 0,
+                Poison: 0
+            };            
+            calculateMaindHandDmg(heroModel, dpsModel);
+            calculateElementalDmg(heroModel, dpsModel)
+            return dpsModel;
+        }
 
-        function calculateMaindHandDmg(heroModel) {
+        function calculateMaindHandDmg(heroModel, dpsModel) {
             var averageWeaponDamage;
             var attackSpeed = heroModel.stats.attackSpeed;
             var critChance = heroModel.stats.critChance;
@@ -73,40 +87,29 @@
                     averageWeaponDamage = e.stats.dps.min;
                 }
             });
-
             //        DPS = (Sum Average Weapon Damage)*AS*(10*%Crit)*(10*%Crit Damage)
-            var mainHandDmg = averageWeaponDamage * attackSpeed * (10 * critChance) * (10 * critDamage);
-            return mainHandDmg;
+            dpsModel.Mainhand = averageWeaponDamage * attackSpeed * (10 * critChance) * (10 * critDamage);
         }
 
-        function calculateElementalDmg(heroModel) {
-            var elementalDmg = {
-                Lightning: 0,
-                Cold: 0,
-                Holy: 0,
-                Arcane: 0,
-                Fire: 0,
-                Poison: 0
-            };
+        function calculateElementalDmg(heroModel, dpsModel) {
             angular.forEach(heroModel.items, function (item) {
                 angular.forEach(item.stats.attributesRaw, function (stat, key) {
                     if (key.indexOf('Damage_Dealt_Percent_Bonus#Lightning') === 0) {
-                        elementalDmg.Lightning += stat.max;
+                        dpsModel.Lightning += stat.max;
                     } else if (key.indexOf('Damage_Dealt_Percent_Bonus#Cold') === 0) {
-                        elementalDmg.Cold += stat.max;
+                        dpsModel.Cold += stat.max;
                     } else if (key.indexOf('Damage_Dealt_Percent_Bonus#Holy') === 0) {
-                        elementalDmg.Holy += stat.max;
+                        dpsModel.Holy += stat.max;
                     } else if (key.indexOf('Damage_Dealt_Percent_Bonus#Arcane') === 0) {
-                        elementalDmg.Arcane += stat.max;
+                        dpsModel.Arcane += stat.max;
                     } else if (key.indexOf('Damage_Dealt_Percent_Bonus#Fire') === 0) {
-                        elementalDmg.Fire += stat.max;
+                        dpsModel.Fire += stat.max;
                     } else if (key.indexOf('Damage_Dealt_Percent_Bonus#Poison') === 0) {
-                        elementalDmg.Poison += stat.max;
+                        dpsModel.Poison += stat.max;
                     }
                 });
             });
-
-            return elementalDmg;
+            
         }
     }
 })();

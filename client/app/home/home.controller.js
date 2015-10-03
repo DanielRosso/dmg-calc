@@ -49,8 +49,7 @@
                     heroService.getHeroModel(vm.hero.stats, vm.hero.items)
                         .then(function (data) {
                             vm.heroModel = data;
-                            vm.dps.mainHand = heroService.calculateMaindHandDmg(vm.heroModel);
-                            vm.dps.elemental = heroService.calculateElementalDmg(vm.heroModel);
+                            vm.dps = heroService.calculateDPS(vm.heroModel);
                         });
                 });
         }

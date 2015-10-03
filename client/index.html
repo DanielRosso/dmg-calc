@@ -5,29 +5,29 @@
     <meta charset="UTF-8">
     <title>Diablo 3 DPS-Calculator</title>
 
+    <link href='https://fonts.googleapis.com/css?family=Vollkorn' rel='stylesheet' type='text/css'>
+
+    <!-- build:css({.tmp,client}) vendor.css -->
     <!-- bower:css -->
     <!-- endbower -->
+    <!-- endbuild -->
 
+    <!-- build:css({.tmp,client}) app.css -->
     <!-- inject:css -->
     <!-- endinject -->
-
-    <!-- bower:js -->
-    <!-- endbower -->
-
-    <!-- inject:js -->
-    <!-- endinject -->
+    <!-- endbuild -->
 </head>
 
 <body ng-controller="Home as vm">
-    
+
     <div class="header">
         <ul>
             <li>Diablo 3 DPS</li>
-            <li class="active"><a href="./">Home</a></li>
+            <li class="active"><a href="./index.html">Home</a></li>
         </ul>
     </div>
 
-    <div class="container main-content">
+    <div class="main-content">
         <div class="content-header">
             <div>
                 Type here your Battlenet Tag. "name-1111, or name#1111 or name 1111".
@@ -40,37 +40,44 @@
             </div>
         </div>
 
-        <div class="header-content">
+        <div class="hero-list-wrapper">
             <img ng-show="vm.areHeroesLoading()" />
             <div class="hero-list">
                 <ul>
-                    <li ng-repeat="hero in vm.heroes" ng-click="vm.loadHero(hero)" ng-class="">
+                    <li class="shadow-1" ng-repeat="hero in vm.heroes" ng-click="vm.loadHero(hero)" ng-class="">
                         {{hero.name}}
                     </li>
                 </ul>
             </div>
         </div>
 
-        <div class="left-content">
-            <p>
-                Maindhand: {{vm.dps.mainHand}}
-            </p>
-            <p ng-repeat="(key, value) in vm.dps.elemental">{{key}}: {{value}}</p>
-        </div>
+        <div class="wrapper">
+            <div class="left-content">
+                <p ng-repeat="(key, value) in vm.dps">{{key}}: {{value}}</p>
+            </div>
 
-        <div class="right-content">
-
-            <div class="items-content">
-                <!--            <h2>items</h2>-->
-                <div class="{{key}}" ng-repeat="(key, value) in vm.hero.items" style="background-color: {{value.displayColor}}">
-                    <a href="{{vm.TooltipUrl(value.tooltipParams)}}">
-                        <img ng-src="{{vm.ImageUrl(value.icon)}}">
-                    </a>
+            <div class="right-content">
+                <div class="items-content">
+                    <!--            <h2>items</h2>-->
+                    <div class="{{key}}" ng-repeat="(key, value) in vm.hero.items" style="background-color: {{value.displayColor}}">
+                        <a href="{{vm.TooltipUrl(value.tooltipParams)}}">
+                            <img ng-src="{{vm.ImageUrl(value.icon)}}">
+                        </a>
+                    </div>
                 </div>
-
             </div>
         </div>
     </div>
 </body>
+
+<!-- build:js(client) vendor.js -->
+<!-- bower:js -->
+<!-- endbower -->
+<!-- endbuild -->
+
+<!-- build:js({.tmp,client}) app.js -->
+<!-- inject:js -->
+<!-- endinject -->
+<!-- endbuild -->
 
 </html>
