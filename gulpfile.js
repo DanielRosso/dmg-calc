@@ -7,19 +7,28 @@ var gulp = require('gulp')
   , angularFileSort = require('gulp-angular-filesort')
   , install = require("gulp-install")
   , sync = require('gulp-sync')(gulp)
-  , htmlInjector = require('bs-html-injector')
-//  , watch = require('gulp-watch')
+// , htmlInjector = require('bs-html-injector')
   , spa = require('browser-sync-spa')
   , plumber = require('gulp-plumber')
   , concat = require('gulp-concat')
-  , del = require('del');
+  , del = require('del')
+  , rev = require('gulp-rev')
+  , revReplace = require('gulp-rev-replace')
+  , uglify = require('gulp-uglify')
+  , saveLicense = require('uglify-save-license')
+  , csso = require('gulp-csso')
+  , useref = require('gulp-useref')
+  , minifyHTML = require('gulp-minify-html')
+  , size = require('gulp-size')
+  , filter = require('gulp-filter');
 
 var paths =
   {
     clientApp: "./client/app/",
     client: "./client/",
     tmp: "./.tmp/",
-    assets: "./client/assets/"
+    assets: "./client/assets/",
+    dist: "./dist/"
   }
 
 function isOnlyChange(event) {
@@ -44,10 +53,53 @@ gulp.task('serve', ['watch'], function () {
   });
 });
 
+gulp.task('serve:dist', ['build'], function () {
+  browserSync.init({
+    server: {
+      baseDir: paths.dist
+    }
+  })
+})
+
+gulp.task('build', ['html']);
+
+gulp.task('html', sync.sync(['clean', 'inject']), function () {
+  var htmlFilter = filter('*.html', { restore: true });
+  var jsFilter = filter('**/*.js', { restore: true });
+  var cssFilter = filter('**/*.css', { restore: true });
+  var assets = useref.assets();
+
+  return gulp.src(".tmp/*.html")
+    .pipe(assets)
+    .pipe(rev())
+    .pipe(jsFilter)
+    .pipe(uglify({ preserveComments: saveLicense }))
+    .pipe(jsFilter.restore)
+    .pipe(cssFilter)
+    .pipe(csso())
+    .pipe(cssFilter.restore)
+    .pipe(assets.restore())
+    .pipe(useref())
+    .pipe(revReplace())
+    .pipe(htmlFilter)
+    .pipe(minifyHTML({
+      empty: true,
+      spare: true,
+      quotes: true,
+      conditionals: true
+    }))
+    .pipe(htmlFilter.restore)
+    .pipe(size({
+      title: paths.dist, showFiles: true
+    }))
+    .pipe(gulp.dest(paths.dist))
+});
+
 gulp.task('watch', ['inject'], function () {
   gulp.watch(path.join(paths.client, '/*.html'), ['inject'], browserSync.reload);
 
-  gulp.watch(paths.client + "**/*.less", function (event) {
+  gulp.watch("client/**/*.less", function (event) {
+    console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
     if (isOnlyChange(event)) {
       gulp.start('less');
     } else {
@@ -55,7 +107,8 @@ gulp.task('watch', ['inject'], function () {
     }
   });
 
-  gulp.watch(paths.clientApp + "**/*.js", function (event) {
+  gulp.watch("client/**/*.js", function (event) {
+    console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
     if (isOnlyChange(event)) {
       gulp.start('scripts');
     } else {
@@ -109,5 +162,5 @@ gulp.task('less', function () {
 });
 
 gulp.task('clean', function () {
-  return del(paths.tmp);
+  return del([paths.tmp, paths.dist]);
 });
