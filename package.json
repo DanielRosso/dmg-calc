@@ -13,6 +13,7 @@
     "gulp-angular-filesort": "^1.1.1",
     "gulp-concat": "^2.6.0",
     "gulp-csso": "^1.0.0",
+    "gulp-deploy-git": "^0.5.2",
     "gulp-filter": "^3.0.1",
     "gulp-gh-pages": "^0.5.2",
     "gulp-inject": "^3.0.0",
