@@ -21,7 +21,7 @@ var gulp = require('gulp')
     , minifyHTML = require('gulp-minify-html')
     , size = require('gulp-size')
     , filter = require('gulp-filter')
-//, ghPages = require('gulp-gh-pages')
+    , ghPages = require('gulp-gh-pages')
     , deploy = require('gulp-deploy-git');
 
 var paths =
@@ -43,11 +43,19 @@ gulp.task('install', function () {
 });
 
 gulp.task('deploy', function () {
-    return gulp.src('./dist/**/*', {base: 'dist/'})
+    return gulp.src('./dist/**/*', { base: './dist/' })
         .pipe(deploy({
             repository: 'git@github.com:DanielRosso/dmg-calc.git',
             remoteBranch: ['gh-pages']
         }));
+});
+
+/**
+ * Push build to gh-pages
+ */
+gulp.task('deploy2', function () {
+  return gulp.src("./dist/**/*")
+    .pipe(ghPages())
 });
 
 gulp.task('serve', ['watch'], function () {
