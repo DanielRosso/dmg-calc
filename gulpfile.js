@@ -73,10 +73,9 @@ gulp.task('html', sync.sync(['clean', 'inject']), function () {
   var htmlFilter = filter('*.html', { restore: true });
   var jsFilter = filter('**/*.js', { restore: true });
   var cssFilter = filter('**/*.css', { restore: true });
-  var assets = useref.assets();
 
   return gulp.src(".tmp/*.html")
-    .pipe(assets)
+    .pipe(useref())
     .pipe(rev())
     .pipe(jsFilter)
     .pipe(uglify({ preserveComments: saveLicense }))
@@ -84,8 +83,6 @@ gulp.task('html', sync.sync(['clean', 'inject']), function () {
     .pipe(cssFilter)
     .pipe(csso())
     .pipe(cssFilter.restore)
-    .pipe(assets.restore())
-    .pipe(useref())
     .pipe(revReplace())
     .pipe(htmlFilter)
     .pipe(minifyHTML({
