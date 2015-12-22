@@ -43,9 +43,10 @@ gulp.task('install', function () {
 });
 
 gulp.task('deploy', function () {
-    return gulp.src('./dist/**/*')
+    return gulp.src('./dist/**/*', {base: 'dist/'})
         .pipe(deploy({
-            repository: 'git@github.com:DanielRosso/dmg-calc.git'
+            repository: 'git@github.com:DanielRosso/dmg-calc.git',
+            remoteBranch: ['gh-pages']
         }));
 });
 
