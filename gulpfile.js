@@ -7,7 +7,6 @@ var gulp = require('gulp')
     , angularFileSort = require('gulp-angular-filesort')
     , install = require("gulp-install")
     , sync = require('gulp-sync')(gulp)
-// , htmlInjector = require('bs-html-injector')
     , spa = require('browser-sync-spa')
     , plumber = require('gulp-plumber')
     , concat = require('gulp-concat')
@@ -21,8 +20,7 @@ var gulp = require('gulp')
     , minifyHTML = require('gulp-minify-html')
     , size = require('gulp-size')
     , filter = require('gulp-filter')
-    , ghPages = require('gulp-gh-pages')
-    , deploy = require('gulp-deploy-git');
+    , ghPages = require('gulp-gh-pages-cname');
 
 var paths =
     {
@@ -42,20 +40,14 @@ gulp.task('install', function () {
         .pipe(install());
 });
 
-gulp.task('deploy', function () {
-    return gulp.src('./dist/**/*', { base: './dist/' })
-        .pipe(deploy({
-            repository: 'git@github.com:DanielRosso/dmg-calc.git',
-            remoteBranch: ['gh-pages']
-        }));
-});
-
 /**
  * Push build to gh-pages
  */
-gulp.task('deploy2', function () {
-  return gulp.src("./dist/**/*")
-    .pipe(ghPages())
+gulp.task('deploy', function () {
+    return gulp.src("./dist/**/*")
+        .pipe(ghPages({
+            cname: "d3dps.rosso.li"
+        }))
 });
 
 gulp.task('serve', ['watch'], function () {
@@ -81,6 +73,9 @@ gulp.task('serve:dist', ['build'], function () {
 
 gulp.task('build', ['html']);
 
+/**
+ * build the minified html, css and js files and place them in the dist folder.
+ */
 gulp.task('html', sync.sync(['clean', 'inject']), function () {
     var htmlFilter = filter('*.html', { restore: true });
     var jsFilter = filter('**/*.js', { restore: true });
