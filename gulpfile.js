@@ -28,7 +28,8 @@ var paths =
         client: "./client/",
         tmp: "./.tmp/",
         assets: "./client/assets/",
-        dist: "./dist/"
+        dist: "./dist/",
+        publish: "./.publish/"
     }
 
 function isOnlyChange(event) {
@@ -172,5 +173,5 @@ gulp.task('less', function () {
 });
 
 gulp.task('clean', function () {
-    return del([paths.tmp, paths.dist]);
+    return del([paths.tmp, paths.dist, paths.publish]);
 });

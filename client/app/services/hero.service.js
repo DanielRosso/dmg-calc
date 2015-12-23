@@ -10,21 +10,27 @@
     function heroService($http, $q, urlService) {
         var service = {
             getHeroModel: getHeroModel,
-            calculateDPS: calculateDPS
+            calculateDPS: calculateDPS,
+            loadHeroesData: loadHeroesData,
+            loadHeroesData2: loadHeroesData2
         };
 
         return service;
 
         /////////////////
 
-        function getHeroModel(heroStats, items) {
-
+        //function getHeroModel(rawData, heroStats, items) {            
+        function getHeroModel(data) {
+            var rawData = data.data;
+            var heroStats = data.data.stats;
+            var items = data.data.items;
+            
             //            durch alle items loopen. ich brauche von allen elemental dmg und so zeugs.$anchorScroll
             //            http://stackoverflow.com/questions/21024411/angular-q-how-to-chain-multiple-promises-within-and-after-a-for-loop
 
             var defer = $q.defer();
             var promises = [];
-            
+
             function createHeroModel(e) {
                 //model erstellen
                 var items = [];
@@ -39,28 +45,82 @@
 
                 heroModel.stats = heroStats;
                 heroModel.items = items;
+                heroModel.rawData = e[0].config.rawData;
+
                 defer.resolve(heroModel);
             }
 
-            function loadItem(url, heroStats, item) {
+            function loadItem(url, heroStats, item, rawData) {
                 return $http.jsonp(url, {
-                    //der zweite param wird im config obj gespeichert. damit behalte ich das urspürngliche item mit dem ergebniss zussammen
+                    //der zweite param wird im config obj gespeichert. welche das element ist von den einzelnen promises.
+                    //siehe createHeroModel(e) e=element. damit behalte ich das urspürngliche item mit dem ergebniss zussammen
                     item: item,
-                    heroStats: heroStats
+                    heroStats: heroStats,
+                    rawData: rawData
                 });
             }
 
             angular.forEach(items, function (item, key) {
                 var url = urlService.getUrlForItem(item.tooltipParams);
                 item.slot = key;
-                promises.push(loadItem(url, heroStats, item));
+                promises.push(loadItem(url, heroStats, item, rawData));
             });
 
             $q.all(promises).then(createHeroModel);
 
             return defer.promise;
         }
-        
+
+        function getHeroModel2(data) {
+            return $http.jsonp(url);
+        }
+
+        function loadHeroesData2(heroList, battleNetTag) {
+            var promises = [];
+
+            return $q.all(promises)
+        }
+
+        function loadHeroesData(heroList, battleNetTag) {
+            var defer = $q.defer();
+            var promises = [];
+
+            function createHeroList(e) {
+                var hero1 = {};
+                hero1.dps = 100;
+
+                var hero2 = {}
+                hero2.dps = 200;
+
+                var hero3 = {}
+                hero2.dps = 300;
+
+
+                var model = { hero1, hero2, hero3 };
+
+                defer.resolve(model);
+            }
+
+            function loadHeroData(url) {
+                return $http.jsonp(url)
+                    .then(function (data) {
+                        getHeroModel(data.data, data.data.stats, data.data.items)
+                            .then(function (data) {
+                                data.dps = calculateDPS(data);
+                            });
+                    });
+            }
+
+            angular.forEach(heroList, function (hero, index) {
+                var url = urlService.getUrlForHero(hero.id, battleNetTag);
+                promises.push(loadHeroData(url));
+            });
+
+            $q.all(promises).then(createHeroList);
+
+            return defer.promise;
+        }
+
         function calculateDPS(heroModel) {
             var dpsModel = {
                 Mainhand: 0,
@@ -70,7 +130,7 @@
                 Arcane: 0,
                 Fire: 0,
                 Poison: 0
-            };            
+            };
             calculateMaindHandDmg(heroModel, dpsModel);
             calculateElementalDmg(heroModel, dpsModel)
             return dpsModel;
@@ -109,7 +169,7 @@
                     }
                 });
             });
-            
+
         }
     }
 })();
