@@ -100,7 +100,7 @@
                 .then(function (data) {
                     heroesLoading = false;
                     //vm.heroes = data.data.heroes;
-                    heroService.loadHeroesData(data.data.heroes, vm.battleNetTag)
+                    heroService.loadHeroesData2(data.data.heroes, vm.battleNetTag)
                         .then(function (data) {
                             vm.heroes = data;
                         });

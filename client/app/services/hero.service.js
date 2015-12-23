@@ -71,14 +71,40 @@
             return defer.promise;
         }
 
-        function getHeroModel2(data) {
-            return $http.jsonp(url);
+        function loadHeroesData2(heroList, battleNetTag) {
+            return $q.all(heroList.map(loadHeroData2, battleNetTag))
+                .then(function (result) {
+                    var x = result;
+                    var hero = hero;
+                });
         }
 
-        function loadHeroesData2(heroList, battleNetTag) {
-            var promises = [];
+        function loadHeroData2(hero) {
+            var battleNetTag = this;
+            var url = urlService.getUrlForHero(hero.id, battleNetTag);
+            return $http.jsonp(url)
+                .then(function (result) {
+                    var itemList = [];
+                    Object.keys(result.data.items).forEach(function (key) {
+                        var item = {};
+                        item.slot = key;
+                        item.data = result.data.items[key];
+                        itemList.push(item);
+                    });
 
-            return $q.all(promises)
+                    return $q.all(itemList.map(loadItemData2))
+                });
+        }
+        
+        /**
+         * item objekt { slot: 'head', data: data}
+         */
+        function loadItemData2(item, index) {
+            var url = urlService.getUrlForItem(item.data.tooltipParams);
+            //der zweite param ist ein config obj.
+            return $http.jsonp(url, {
+                item: item,
+            });
         }
 
         function loadHeroesData(heroList, battleNetTag) {
@@ -131,6 +157,7 @@
                 Fire: 0,
                 Poison: 0
             };
+
             calculateMaindHandDmg(heroModel, dpsModel);
             calculateElementalDmg(heroModel, dpsModel)
             return dpsModel;
