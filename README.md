@@ -2,9 +2,9 @@
 
 [![Gemnasium](https://img.shields.io/gemnasium/DonRosso/dmg-calc.svg?style=flat-square)]()
 [![David](https://img.shields.io/david/dev/DonRosso/dmg-calc.svg?style=flat-square)]()
-[![Build Status](https://semaphoreci.com/api/v1/projects/ac4b8a3f-67c7-4689-85c7-886279f1bc80/643731/shields_badge.svg)](https://semaphoreci.com/boris-spirig/dmg-calc)
+[![Build Status](https://semaphoreci.com/api/v1/projects/485e468f-ee3a-451b-8c2c-942caad74a83/643744/shields_badge.svg)](https://semaphoreci.com/boris-spirig/dmg-calc)
 
-playground for angularjs and the battle.net api.
+playground for angularjs, gulp and the battle.net api.
 
 setup:
 

@@ -28,7 +28,8 @@ var paths =
         client: "./client/",
         tmp: "./.tmp/",
         assets: "./client/assets/",
-        dist: "./dist/"
+        dist: "./dist/",
+        publish: "./.publish/"
     }
 
 function isOnlyChange(event) {
@@ -83,11 +84,13 @@ gulp.task('html', sync.sync(['clean', 'inject']), function () {
 
     return gulp.src(".tmp/*.html")
         .pipe(useref())
-        .pipe(rev())
+        //.pipe(rev())
         .pipe(jsFilter)
+        .pipe(rev())
         .pipe(uglify({ preserveComments: saveLicense }))
         .pipe(jsFilter.restore)
         .pipe(cssFilter)
+        .pipe(rev())
         .pipe(csso())
         .pipe(cssFilter.restore)
         .pipe(revReplace())
@@ -172,5 +175,5 @@ gulp.task('less', function () {
 });
 
 gulp.task('clean', function () {
-    return del([paths.tmp, paths.dist]);
+    return del([paths.tmp, paths.dist, paths.publish]);
 });
