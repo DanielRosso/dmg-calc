@@ -107,45 +107,47 @@
             });
         }
 
-        function loadHeroesData(heroList, battleNetTag) {
-            var defer = $q.defer();
-            var promises = [];
-
-            function createHeroList(e) {
-                var hero1 = {};
-                hero1.dps = 100;
-
-                var hero2 = {}
-                hero2.dps = 200;
-
-                var hero3 = {}
-                hero2.dps = 300;
-
-
-                var model = { hero1, hero2, hero3 };
-
-                defer.resolve(model);
-            }
-
-            function loadHeroData(url) {
-                return $http.jsonp(url)
-                    .then(function (data) {
-                        getHeroModel(data.data, data.data.stats, data.data.items)
+        /*
+                function loadHeroesData(heroList, battleNetTag) {
+                    var defer = $q.defer();
+                    var promises = [];
+        
+                    function createHeroList(e) {
+                        var hero1 = {};
+                        hero1.dps = 100;
+        
+                        var hero2 = {}
+                        hero2.dps = 200;
+        
+                        var hero3 = {}
+                        hero2.dps = 300;
+        
+        
+                        var model = { hero1, hero2, hero3 };
+        
+                        defer.resolve(model);
+                    }
+        
+                    function loadHeroData(url) {
+                        return $http.jsonp(url)
                             .then(function (data) {
-                                data.dps = calculateDPS(data);
+                                getHeroModel(data.data, data.data.stats, data.data.items)
+                                    .then(function (data) {
+                                        data.dps = calculateDPS(data);
+                                    });
                             });
+                    }
+        
+                    angular.forEach(heroList, function (hero, index) {
+                        var url = urlService.getUrlForHero(hero.id, battleNetTag);
+                        promises.push(loadHeroData(url));
                     });
-            }
-
-            angular.forEach(heroList, function (hero, index) {
-                var url = urlService.getUrlForHero(hero.id, battleNetTag);
-                promises.push(loadHeroData(url));
-            });
-
-            $q.all(promises).then(createHeroList);
-
-            return defer.promise;
-        }
+        
+                    $q.all(promises).then(createHeroList);
+        
+                    return defer.promise;
+                }
+                */
 
         function calculateDPS(heroModel) {
             var dpsModel = {
