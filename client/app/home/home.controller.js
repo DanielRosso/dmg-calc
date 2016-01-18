@@ -93,6 +93,6 @@
                 console.log("false");
         }
 
-        $interval(checkForUpdates, 1000)
+        $interval(checkForUpdates, 60000)
     }
 })();
