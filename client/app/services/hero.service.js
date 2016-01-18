@@ -9,17 +9,18 @@
 
     function heroService($http, $q, urlService) {
         var service = {
-            loadHeroesData: loadHeroesData
+            loadHeroesData: loadHeroesData,
+            HasNewData: HasNewData
         };
 
         return service;
 
         /////////////////
         function loadHeroesData(heroList, battleNetTag) {
-            return $q.all(heroList.map(loadHeroData2, battleNetTag)); //map: auf jedes item in der liste wird die funktion angewendet
+            return $q.all(heroList.map(loadHeroData, battleNetTag)); //map: auf jedes item in der liste wird die funktion angewendet
         }
 
-        function loadHeroData2(hero) {
+        function loadHeroData(hero) {
             var battleNetTag = this; //zweiter param von loadHeroesData
             var url = urlService.getUrlForHero(hero.id, battleNetTag);
             return $http.jsonp(url)
@@ -56,7 +57,7 @@
                         });
                 });
         }
-        
+
         function loadItemData(item, index) {
             var url = urlService.getUrlForItem(item.data.tooltipParams);
             //der zweite param ist ein config obj.
@@ -115,6 +116,23 @@
                 });
             });
 
+        }
+
+        function HasNewData(heroArray, battleNetTag) {
+            return $q.all(heroArray.map(loadHeroProfile, battleNetTag)); //map: auf jedes item in der liste wird die funktion angewendet
+        }
+
+        function loadHeroProfile(hero) {
+            var battleNetTag = this; //zweiter param des aufrufs
+            var url = urlService.getUrlForHero(hero.id, battleNetTag);
+            return $http.jsonp(url)
+                .then(function (result) {
+                    // compare last updated
+                    if (hero["last-updated"] < result.data["last-updated"])
+                        return true;
+                    else
+                        return false;
+                })
         }
     }
 })();
