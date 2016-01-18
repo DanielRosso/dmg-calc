@@ -45,8 +45,8 @@
             <div class="hero-list">
                 <ul>
                     <li class="shadow-1" ng-repeat="hero in vm.heroes" ng-click="vm.loadHero(hero)" ng-class="">
-                        {{hero.name}}
-                        {{hero.dps}}
+                        <div class="hero-name">{{hero.name}}</div>
+                        <div class="dps-number">{{hero.dpsModel.Mainhand | number:0}} DPS</div>
                     </li>
                 </ul>
             </div>
@@ -54,7 +54,7 @@
 
         <div class="wrapper">
             <div class="left-content">
-                <p ng-repeat="(key, value) in vm.heroModel.dps">{{key}}: {{value}}</p>
+                <p ng-repeat="(key, value) in vm.currentHero.dpsModel">{{key}}: {{value}}</p>
             </div>
 
             <div class="right-content">

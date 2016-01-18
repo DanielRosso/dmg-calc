@@ -42,44 +42,10 @@
          */
         function loadHero(hero) {
             heroLoading = true;
-            var url = urlService.getUrlForHero(hero.id, vm.battleNetTag);
-
-            //hier sollte anhand der hero id gesucht werden. hero.service sollte diese function bieten und direkt den hero zurückliefern
-            $http.jsonp(url)
-                .then(function (data) {
-                    heroLoading = false;
-                    //vm.hero = [data.data];
-                    vm.currentHero = data.data;
-                    loadHeroDataAndCalcDps(vm.currentHero.stats, vm.currentHero.items);
-                    
-                    /*
-                    heroService.getHeroModel(vm.hero.stats, vm.hero.items)
-                        .then(function (data) {
-                            vm.heroModel = data;
-                            vm.dps = heroService.calculateDPS(vm.heroModel);
-                        });
-                        */
-                });
-
-            var x = vm.heroes;
-        }
-
-        function loadHerosFromBnet() {
-            angular.forEach(vm.heroes, function (hero, index) {
-                heroService.getHeroModel(hero.stats, hero.items)
-                    .then(function (data) {
-                        hero.heroModel = data;
-                        hero.heroModel.dps = heroService.calculateDPS(vm.heroModel);
-                    });
-            });
-        }
-
-        function loadHeroDataAndCalcDps(stats, items) {
-            heroService.getHeroModel(stats, items)
-                .then(function (data) {
-                    vm.heroModel = data;
-                    vm.heroModel.dps = heroService.calculateDPS(vm.heroModel);
-                });
+            for (var i = 0; i < vm.heroes.length; i++) {
+                if (hero.id == vm.heroes[i].id)
+                    vm.currentHero = vm.heroes[i];
+            }
         }
 
         function loadProfile() {
@@ -97,16 +63,13 @@
             var url = urlService.getUrlForHeroes(vm.battleNetTag);
 
             $http.jsonp(url)
-                .then(function (data) {
-                    heroesLoading = false;
+                .then(function (data) {                    
                     //vm.heroes = data.data.heroes;
-                    heroService.loadHeroesData2(data.data.heroes, vm.battleNetTag)
+                    heroService.loadHeroesData(data.data.heroes, vm.battleNetTag)
                         .then(function (data) {
                             vm.heroes = data;
+                            heroesLoading = false;
                         });
-                    
-                    ///todo heroservice sollte alle daten laden und ein vm.hereos object zurückgeben                    
-                    //loadHerosFromBnet();
                 });
         }
     }
