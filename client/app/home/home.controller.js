@@ -17,6 +17,7 @@
         vm.areHeroesLoading = areHeroesLoading;
         vm.isHeroLoading = isHeroLoading;
         vm.loadHero = loadHero;
+        vm.newUpdates = newUpdates;
         vm.ImageUrl = ImageUrl;
         vm.TooltipUrl = TooltipUrl;
         vm.dps = {};
@@ -76,31 +77,20 @@
                 });
         };
 
+        $interval(checkForUpdates, 60000)
+
         function checkForUpdates() {
             if (vm.heroes != null) {
+                vm.hasNewData = false;
                 heroService.HasNewData(vm.heroes, vm.battleNetTag)
-                    .then(function (data) {
-                        //do something
-                        data.every(isNew)
+                    .then(function (result) {
+                        vm.hasNewData = result;
                     });
             }
         };
 
-        function isNew(element, index, array) {
-            if (element == true) {
-                window.alert("neue daten!")
-                return true;
-            }
-            else {
-                console.log("false");
-                return false;
-            }
-        }
-
         function newUpdates() {
-            return isNew();
-        }
-
-        $interval(checkForUpdates, 60000)
+            return vm.hasNewData;
+        };
     }
 })();

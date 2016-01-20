@@ -119,10 +119,13 @@
         }
 
         function HasNewData(heroArray, battleNetTag) {
-            return $q.all(heroArray.map(loadHeroProfile, battleNetTag)); //map: auf jedes item in der liste wird die funktion angewendet
+            return $q.all(heroArray.map(loadLastUpdatedFromHeroProfile, battleNetTag)) //map: auf jedes item in der liste wird die funktion angewendet
+                .then(function (result) {
+                    return result.every(e => e == true)
+                });
         }
 
-        function loadHeroProfile(hero) {
+        function loadLastUpdatedFromHeroProfile(hero) {
             var battleNetTag = this; //zweiter param des aufrufs
             var url = urlService.getUrlForHero(hero.id, battleNetTag);
             return $http.jsonp(url)
