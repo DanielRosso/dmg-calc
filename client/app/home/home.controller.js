@@ -87,10 +87,18 @@
         };
 
         function isNew(element, index, array) {
-            if (element == true)
+            if (element == true) {
                 window.alert("neue daten!")
-            else
+                return true;
+            }
+            else {
                 console.log("false");
+                return false;
+            }
+        }
+
+        function newUpdates() {
+            return isNew();
         }
 
         $interval(checkForUpdates, 1000)
