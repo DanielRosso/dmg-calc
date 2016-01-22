@@ -5,9 +5,9 @@
         .module('d3dps')
         .controller('Home', Home);
 
-    Home.$inject = ['$scope', '$http', '$location', 'urlService', 'heroService'];
+    Home.$inject = ['$scope', '$http', '$interval', '$location', 'urlService', 'heroService'];
 
-    function Home($scope, $http, $location, urlService, heroService) {
+    function Home($scope, $http, $interval, $location, urlService, heroService) {
         var vm = this;
         var heroesLoading = false;
         var heroLoading = false;
@@ -17,6 +17,7 @@
         vm.areHeroesLoading = areHeroesLoading;
         vm.isHeroLoading = isHeroLoading;
         vm.loadHero = loadHero;
+        vm.newUpdates = newUpdates;
         vm.ImageUrl = ImageUrl;
         vm.TooltipUrl = TooltipUrl;
         vm.dps = {};
@@ -37,23 +38,20 @@
             return heroLoading;
         }
 
+        /**
+         * this is called when a hero portrait is selected
+         */
         function loadHero(hero) {
             heroLoading = true;
-            var url = urlService.getUrlForHero(hero.id, vm.battleNetTag);
-
-            $http.jsonp(url)
-                .then(function (data) {
-                    heroLoading = false;
-                    //vm.hero = [data.data];
-                    vm.hero = data.data;
-                    heroService.getHeroModel(vm.hero.stats, vm.hero.items)
-                        .then(function (data) {
-                            vm.heroModel = data;
-                            vm.dps = heroService.calculateDPS(vm.heroModel);
-                        });
-                });
+            for (var i = 0; i < vm.heroes.length; i++) {
+                if (hero.id == vm.heroes[i].id)
+                    vm.currentHero = vm.heroes[i];
+            }
         }
 
+        /**
+         * this is called the first time to load all hero data from this bnet profile
+         */
         function loadProfile() {
             vm.heroes = null;
             heroesLoading = true;
@@ -69,10 +67,30 @@
             var url = urlService.getUrlForHeroes(vm.battleNetTag);
 
             $http.jsonp(url)
-                .then(function (data) {
-                    heroesLoading = false;
-                    vm.heroes = data.data.heroes;
+                .then(function (data) {                    
+                    //vm.heroes = data.data.heroes;
+                    heroService.loadHeroesData(data.data.heroes, vm.battleNetTag)
+                        .then(function (data) {
+                            vm.heroes = data;
+                            heroesLoading = false;
+                        });
                 });
-        }
+        };
+
+        $interval(checkForUpdates, 60000)
+
+        function checkForUpdates() {
+            if (vm.heroes != null) {
+                vm.hasNewData = false;
+                heroService.HasNewData(vm.heroes, vm.battleNetTag)
+                    .then(function (result) {
+                        vm.hasNewData = result;
+                    });
+            }
+        };
+
+        function newUpdates() {
+            return vm.hasNewData;
+        };
     }
 })();

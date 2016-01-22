@@ -45,7 +45,8 @@
             <div class="hero-list">
                 <ul>
                     <li class="shadow-1" ng-repeat="hero in vm.heroes" ng-click="vm.loadHero(hero)" ng-class="">
-                        {{hero.name}}
+                        <div class="hero-name">{{hero.name}}</div>
+                        <div class="dps-number">{{hero.dpsModel.Mainhand | number:0}} DPS</div>
                     </li>
                 </ul>
             </div>
@@ -53,13 +54,13 @@
 
         <div class="wrapper">
             <div class="left-content">
-                <p ng-repeat="(key, value) in vm.dps">{{key}}: {{value}}</p>
+                <p ng-repeat="(key, value) in vm.currentHero.dpsModel">{{key}}: {{value}}</p>
             </div>
 
             <div class="right-content">
                 <div class="items-content">
                     <!--            <h2>items</h2>-->
-                    <div class="{{key}}" ng-repeat="(key, value) in vm.hero.items" style="background-color: {{value.displayColor}}">
+                    <div class="{{key}}" ng-repeat="(key, value) in vm.currentHero.items" style="background-color: {{value.displayColor}}">
                         <a href="{{vm.TooltipUrl(value.tooltipParams)}}">
                             <img ng-src="{{vm.ImageUrl(value.icon)}}">
                         </a>
@@ -68,6 +69,9 @@
             </div>
         </div>
     </div>
+    
+    <div class="loading-bg" ng-show="vm.areHeroesLoading()"><img src="/img/clock-loading.gif" alt=""></div>
+    <div class="notification animated bounce" ng-show="vm.newUpdates()">updates!</div>
 </body>
 
 <!-- build:js(client) vendor.js -->
