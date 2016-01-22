@@ -88,8 +88,9 @@
                     });
             }
         };
-		
+
         function newUpdates() {
             return vm.hasNewData;
         };
+    }
 })();
