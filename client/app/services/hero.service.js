@@ -121,7 +121,12 @@
         function HasNewData(heroArray, battleNetTag) {
             return $q.all(heroArray.map(loadLastUpdatedFromHeroProfile, battleNetTag)) //map: auf jedes item in der liste wird die funktion angewendet
                 .then(function (result) {
-                    return result.every(e => e == true)
+                    // return result.every(e => e == true) // error wegen es6 anotation. mol luege!
+                    return result.every(function (element) {
+                        if (element)
+                            return true;
+                        return false;
+                    })
                 });
         }
 

@@ -85,6 +85,7 @@
                 heroService.HasNewData(vm.heroes, vm.battleNetTag)
                     .then(function (result) {
                         vm.hasNewData = result;
+                        console.log('von new data result: ' + result);
                     });
             }
         };
