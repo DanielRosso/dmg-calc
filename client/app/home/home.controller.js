@@ -11,8 +11,10 @@
         var vm = this;
         var heroesLoading = false;
         var heroLoading = false;
-
-        var battleNetTagFromUrl = $location.search().battlenetTag;
+        vm.heroes = null;
+        vm.hasNewData = false;
+                
+        // var battleNetTagFromUrl = $location.search().battlenetTag;
         vm.loadProfile = loadProfile;
         vm.areHeroesLoading = areHeroesLoading;
         vm.isHeroLoading = isHeroLoading;
@@ -53,12 +55,11 @@
          * this is called the first time to load all hero data from this bnet profile
          */
         function loadProfile() {
-            vm.heroes = null;
             heroesLoading = true;
 
-            if (battleNetTagFromUrl !== null && battleNetTagFromUrl !== undefined) {
-                vm.battleNetTag = battleNetTagFromUrl;
-            }
+            // if (battleNetTagFromUrl !== null && battleNetTagFromUrl !== undefined) {
+            //     vm.battleNetTag = battleNetTagFromUrl;
+            // }
 
             if (vm.battleNetTag !== null && vm.battleNetTag !== undefined) {
                 vm.battleNetTag = urlService.getBattleNetTag(vm.battleNetTag);
@@ -81,9 +82,8 @@
 
         function checkForUpdates() {
             if (vm.heroes != null) {
-                vm.hasNewData = false;
                 heroService.HasNewData(vm.heroes, vm.battleNetTag)
-                    .then(function (result) {
+                    .then(function (result) { // bool
                         vm.hasNewData = result;
                         console.log('von new data result: ' + result);
                     });

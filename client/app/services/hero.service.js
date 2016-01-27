@@ -50,9 +50,14 @@
                                     }
                                 }
                             });
+                            
+                            var date = new Date(1970,0,1);
+                            date.setSeconds(hero["last-updated"]);
+                            //direkt in lastUpdate geht nicht weil es sekunden und nicht ms sind
+                            hero.lastUpdate = date;
 
                             hero.dpsModel = calculateDPS(hero);
-
+                            
                             return hero;
                         });
                 });
