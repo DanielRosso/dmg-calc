@@ -1,4 +1,4 @@
-(function () {
+(function() {
     'use strict';
 
     angular
@@ -13,7 +13,7 @@
         var heroLoading = false;
         vm.heroes = null;
         vm.hasNewData = false;
-                
+
         // var battleNetTagFromUrl = $location.search().battlenetTag;
         vm.loadProfile = loadProfile;
         vm.areHeroesLoading = areHeroesLoading;
@@ -68,10 +68,9 @@
             var url = urlService.getUrlForHeroes(vm.battleNetTag);
 
             $http.jsonp(url)
-                .then(function (data) {                    
-                    //vm.heroes = data.data.heroes;
+                .then(function(data) {
                     heroService.loadHeroesData(data.data.heroes, vm.battleNetTag)
-                        .then(function (data) {
+                        .then(function(data) {
                             vm.heroes = data;
                             heroesLoading = false;
                         });
@@ -83,7 +82,7 @@
         function checkForUpdates() {
             if (vm.heroes != null) {
                 heroService.HasNewData(vm.heroes, vm.battleNetTag)
-                    .then(function (result) { // bool
+                    .then(function(result) { // bool
                         vm.hasNewData = result;
                         console.log('von new data result: ' + result);
                     });

@@ -1,4 +1,6 @@
 // Place your settings in this file to overwrite default and user settings.
 {
-    "editor.fontSize": 13
+    "editor.fontSize": 13,
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 1000
 }

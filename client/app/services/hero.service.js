@@ -1,4 +1,4 @@
-(function () {
+(function() {
     'use strict';
 
     angular
@@ -24,23 +24,23 @@
             var battleNetTag = this; //zweiter param von loadHeroesData
             var url = urlService.getUrlForHero(hero.id, battleNetTag);
             return $http.jsonp(url)
-                .then(function (result) {
+                .success(function(result) {
                     var itemList = [];
-                                        
+
                     //braucht es weil result.items keine arraylist ist
-                    Object.keys(result.data.items).forEach(function (key) {
+                    Object.keys(result.items).forEach(function(key) {
                         var item = {};
                         item.slot = key;
-                        item.data = result.data.items[key];
+                        item.data = result.items[key];
                         itemList.push(item);
                     });
-
+/*
                     return $q.all(itemList.map(loadItemData))
-                        .then(function (itemlist) {
+                        .then(function(itemlist) {
                             var hero = result.data;
-                        
+
                             //die ganzen stats den items zuweisen
-                            Object.keys(hero.items).forEach(function (key) {
+                            Object.keys(hero.items).forEach(function(key) {
                                 for (var i = 0; i < itemlist.length; i++) {
                                     var item = itemlist[i];
                                     if (key == item.config.item.slot) {
@@ -50,21 +50,21 @@
                                     }
                                 }
                             });
-                            
-                            var date = new Date(1970,0,1);
+
+                            var date = new Date(1970, 0, 1);
                             date.setSeconds(hero["last-updated"]);
                             //direkt in lastUpdate geht nicht weil es sekunden und nicht ms sind
                             hero.lastUpdate = date;
 
                             hero.dpsModel = calculateDPS(hero);
-                            
+
                             return hero;
-                        });
+                        });*/
                 });
         }
 
         function loadItemData(item, index) {
-            var url = urlService.getUrlForItem(item.data.tooltipParams);
+            var url = urlService.getUrlForItem(item.data.id);
             //der zweite param ist ein config obj.
             return $http.jsonp(url, {
                 item: item,
@@ -93,7 +93,7 @@
             var critChance = heroModel.stats.critChance;
             var critDamage = heroModel.stats.critDamage;
 
-            angular.forEach(heroModel.items, function (value, key) {
+            angular.forEach(heroModel.items, function(value, key) {
                 if (key == "mainHand") {
                     averageWeaponDamage = value.stats.dps.min;
                 }
@@ -103,8 +103,8 @@
         }
 
         function calculateElementalDmg(heroModel, dpsModel) {
-            angular.forEach(heroModel.items, function (item) {
-                angular.forEach(item.stats.attributesRaw, function (stat, key) {
+            angular.forEach(heroModel.items, function(item) {
+                angular.forEach(item.stats.attributesRaw, function(stat, key) {
                     if (key.indexOf('Damage_Dealt_Percent_Bonus#Lightning') === 0) {
                         dpsModel.Lightning += stat.max;
                     } else if (key.indexOf('Damage_Dealt_Percent_Bonus#Cold') === 0) {
@@ -125,9 +125,9 @@
 
         function HasNewData(heroArray, battleNetTag) {
             return $q.all(heroArray.map(loadLastUpdatedFromHeroProfile, battleNetTag)) //map: auf jedes item in der liste wird die funktion angewendet
-                .then(function (result) {
+                .then(function(result) {
                     // return result.every(e => e == true) // error wegen es6 anotation. mol luege!
-                    return result.every(function (element) {
+                    return result.every(function(element) {
                         if (element)
                             return true;
                         return false;
@@ -139,7 +139,7 @@
             var battleNetTag = this; //zweiter param des aufrufs
             var url = urlService.getUrlForHero(hero.id, battleNetTag);
             return $http.jsonp(url)
-                .then(function (result) {
+                .then(function(result) {
                     // compare last updated
                     if (hero["last-updated"] < result.data["last-updated"])
                         return true;
