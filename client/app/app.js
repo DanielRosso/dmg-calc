@@ -3,7 +3,7 @@
 
     angular
         .module('d3dps', [])
-        
+
         .config(function($httpProvider) {
             $httpProvider.interceptors.push('jsonpInterceptor');
         })
@@ -42,5 +42,5 @@
                 }
             };
         })
-        
+
 })();

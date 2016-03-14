@@ -17,26 +17,29 @@
 
         /////////////////
         function loadHeroesData(heroList, battleNetTag) {
-            return $q.all(heroList.map(loadHeroData, battleNetTag)); //map: auf jedes item in der liste wird die funktion angewendet
+            return $q.all(heroList.map(loadHeroData, battleNetTag))
         }
 
         function loadHeroData(hero) {
             var battleNetTag = this; //zweiter param von loadHeroesData
             var url = urlService.getUrlForHero(hero.id, battleNetTag);
-            return $http.jsonp(url)
-                .success(function(result) {
+            
+            return $.ajax({
+                url: url
+            })
+                .success(function(data) {
                     var itemList = [];
 
-                    //braucht es weil result.items keine arraylist ist
-                    Object.keys(result.items).forEach(function(key) {
+                    //braucht es weil data.items keine arraylist ist
+                    Object.keys(data.items).forEach(function(key) {
                         var item = {};
                         item.slot = key;
-                        item.data = result.items[key];
+                        item.data = data.items[key];
                         itemList.push(item);
                     });
-/*
+
                     return $q.all(itemList.map(loadItemData))
-                        .then(function(itemlist) {
+                        .then(function(data, hm, hmm) {
                             var hero = result.data;
 
                             //die ganzen stats den items zuweisen
@@ -59,15 +62,18 @@
                             hero.dpsModel = calculateDPS(hero);
 
                             return hero;
-                        });*/
+                        });
                 });
         }
 
         function loadItemData(item, index) {
             var url = urlService.getUrlForItem(item.data.id);
-            //der zweite param ist ein config obj.
-            return $http.jsonp(url, {
-                item: item,
+            
+            return $.ajax({
+                url: url
+                , settings: {
+                    item: item,
+                }
             });
         }
 

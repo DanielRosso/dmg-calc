@@ -13,8 +13,6 @@
         var heroLoading = false;
         vm.heroes = null;
         vm.hasNewData = false;
-
-        // var battleNetTagFromUrl = $location.search().battlenetTag;
         vm.loadProfile = loadProfile;
         vm.areHeroesLoading = areHeroesLoading;
         vm.isHeroLoading = isHeroLoading;
@@ -57,19 +55,17 @@
         function loadProfile() {
             heroesLoading = true;
 
-            // if (battleNetTagFromUrl !== null && battleNetTagFromUrl !== undefined) {
-            //     vm.battleNetTag = battleNetTagFromUrl;
-            // }
-
             if (vm.battleNetTag !== null && vm.battleNetTag !== undefined) {
                 vm.battleNetTag = urlService.getBattleNetTag(vm.battleNetTag);
             }
 
             var url = urlService.getUrlForHeroes(vm.battleNetTag);
 
-            $http.jsonp(url)
-                .then(function(data) {
-                    heroService.loadHeroesData(data.data.heroes, vm.battleNetTag)
+            $.ajax({
+                url: url
+            })
+                .success(function(data) {
+                    heroService.loadHeroesData(data.heroes, vm.battleNetTag)
                         .then(function(data) {
                             vm.heroes = data;
                             heroesLoading = false;
