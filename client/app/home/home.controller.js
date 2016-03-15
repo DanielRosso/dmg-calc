@@ -44,8 +44,8 @@
         function loadHero(hero) {
             heroLoading = true;
             for (var i = 0; i < vm.heroes.length; i++) {
-                if (hero.id == vm.heroes[i].id)
-                    vm.currentHero = vm.heroes[i];
+                if (hero.data.id == vm.heroes[i].data.id)
+                    vm.currentHero = vm.heroes[i].data;
             }
         }
 
@@ -61,9 +61,7 @@
 
             var url = urlService.getUrlForHeroes(vm.battleNetTag);
 
-            $.ajax({
-                url: url
-            })
+            $http.get(url)
                 .success(function(data) {
                     heroService.loadHeroesData(data.heroes, vm.battleNetTag)
                         .then(function(data) {

@@ -23,10 +23,8 @@
         function loadHeroData(hero) {
             var battleNetTag = this; //zweiter param von loadHeroesData
             var url = urlService.getUrlForHero(hero.id, battleNetTag);
-            
-            return $.ajax({
-                url: url
-            })
+
+            return $http.get(url)
                 .success(function(data) {
                     var itemList = [];
 
@@ -35,13 +33,15 @@
                         var item = {};
                         item.slot = key;
                         item.data = data.items[key];
+                        item.hero = data;
                         itemList.push(item);
                     });
 
                     return $q.all(itemList.map(loadItemData))
-                        .then(function(data, hm, hmm) {
-                            var hero = result.data;
-
+                        .then(function(data) {
+                            // im config obj is der aktuelle hero gespeichert
+                            var hero = data[0].config.item.hero;
+                            var itemlist = data;
                             //die ganzen stats den items zuweisen
                             Object.keys(hero.items).forEach(function(key) {
                                 for (var i = 0; i < itemlist.length; i++) {
@@ -66,14 +66,11 @@
                 });
         }
 
-        function loadItemData(item, index) {
-            var url = urlService.getUrlForItem(item.data.id);
-            
-            return $.ajax({
-                url: url
-                , settings: {
-                    item: item,
-                }
+        function loadItemData(item) {
+            var url = urlService.getUrlForItem(item);
+
+            return $http.get(url, {
+                item: item
             });
         }
 

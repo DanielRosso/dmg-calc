@@ -3,7 +3,6 @@
 
     var profileUrl = 'https://eu.api.battle.net/d3/profile/';
     var dataUrl = 'https://eu.api.battle.net/d3/data/';
-    var itemUrl = dataUrl + 'item/';
     var key = '4nzu76bj73zj76uzjgxu6repat4damdy';
     var locale = 'de_DE';
 
@@ -30,17 +29,17 @@
         }
 
         function getUrlForHeroes(battleNetTag) {
-            var url = profileUrl + battleNetTag + '/?locale=' + locale + '&apikey=' + key;// + '&callback=?';
+            var url = profileUrl + battleNetTag + '/?locale=' + locale + '&apikey=' + key;
             return url;
         }
 
         function getUrlForHero(heroId, battleNetTag) {
-            var url = profileUrl + battleNetTag + '/hero/' + heroId + '?locale=' + locale + '&apikey=' + key;// + '&callback=?';
+            var url = profileUrl + battleNetTag + '/hero/' + heroId + '?locale=' + locale + '&apikey=' + key;
             return url;
         }
 
         function getUrlForItem(item) {
-            var url = itemUrl + item + '?locale=' + locale + '&apikey=' + key;// + '&callback=?';
+            var url = dataUrl + item.data.tooltipParams + '?locale=' + locale + '&apikey=' + key;
             return url;
         }
     }
