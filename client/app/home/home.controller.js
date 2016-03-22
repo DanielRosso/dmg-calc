@@ -1,4 +1,4 @@
-(function () {
+(function() {
     'use strict';
 
     angular
@@ -13,8 +13,6 @@
         var heroLoading = false;
         vm.heroes = null;
         vm.hasNewData = false;
-                
-        // var battleNetTagFromUrl = $location.search().battlenetTag;
         vm.loadProfile = loadProfile;
         vm.areHeroesLoading = areHeroesLoading;
         vm.isHeroLoading = isHeroLoading;
@@ -46,8 +44,8 @@
         function loadHero(hero) {
             heroLoading = true;
             for (var i = 0; i < vm.heroes.length; i++) {
-                if (hero.id == vm.heroes[i].id)
-                    vm.currentHero = vm.heroes[i];
+                if (hero.data.id == vm.heroes[i].data.id)
+                    vm.currentHero = vm.heroes[i].data;
             }
         }
 
@@ -57,21 +55,16 @@
         function loadProfile() {
             heroesLoading = true;
 
-            // if (battleNetTagFromUrl !== null && battleNetTagFromUrl !== undefined) {
-            //     vm.battleNetTag = battleNetTagFromUrl;
-            // }
-
             if (vm.battleNetTag !== null && vm.battleNetTag !== undefined) {
                 vm.battleNetTag = urlService.getBattleNetTag(vm.battleNetTag);
             }
 
             var url = urlService.getUrlForHeroes(vm.battleNetTag);
 
-            $http.jsonp(url)
-                .then(function (data) {                    
-                    //vm.heroes = data.data.heroes;
-                    heroService.loadHeroesData(data.data.heroes, vm.battleNetTag)
-                        .then(function (data) {
+            $http.get(url)
+                .success(function(data) {
+                    heroService.loadHeroesData(data.heroes, vm.battleNetTag)
+                        .then(function(data) {
                             vm.heroes = data;
                             heroesLoading = false;
                         });
@@ -83,7 +76,7 @@
         function checkForUpdates() {
             if (vm.heroes != null) {
                 heroService.HasNewData(vm.heroes, vm.battleNetTag)
-                    .then(function (result) { // bool
+                    .then(function(result) { // bool
                         vm.hasNewData = result;
                         console.log('von new data result: ' + result);
                     });

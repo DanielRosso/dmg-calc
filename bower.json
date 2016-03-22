@@ -14,8 +14,8 @@
     "tests"
   ],
   "dependencies": {
-    "angular": "~1.4.5",
-    "jquery": "~2.1.4",
+    "angular": "~1.5.0",
+    "jquery": "~2.2.1",
     "animate.css": "~3.5.1"
   }
 }
