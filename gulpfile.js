@@ -38,14 +38,14 @@ function isOnlyChange(event) {
 }
 
 gulp.task('install', function () {
-    return gulp.src(['tsd.json', 'bower.json'])
+    return gulp.src(['tsd.json', 'bower.json', 'package.json'])
         .pipe(install());
 });
 
 /**
  * Push build to gh-pages
  */
-gulp.task('deploy', function () {
+gulp.task('deploy', ['build'], function () {
     return gulp.src("./dist/**/*")
         .pipe(ghPages({
             cname: "d3dps.rosso.li"
