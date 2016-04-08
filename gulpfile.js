@@ -37,7 +37,7 @@ function isOnlyChange(event) {
     return event.type === 'changed';
 }
 
-gulp.task('install', function () {
+gulp.task('install', function() {
     return gulp.src(['tsd.json', 'bower.json', 'package.json'])
         .pipe(install());
 });
@@ -45,14 +45,14 @@ gulp.task('install', function () {
 /**
  * Push build to gh-pages
  */
-gulp.task('deploy', ['build'], function () {
+gulp.task('deploy', ['build'], function() {
     return gulp.src("./dist/**/*")
         .pipe(ghPages({
             cname: "d3dps.rosso.li"
         }))
 });
 
-gulp.task('serve', ['watch'], function () {
+gulp.task('serve', ['watch'], function() {
     browserSync.init({
         server: {
             baseDir: [paths.tmp, paths.client, "./client/assets/"]
@@ -65,7 +65,7 @@ gulp.task('serve', ['watch'], function () {
     });
 });
 
-gulp.task('serve:dist', ['build'], function () {
+gulp.task('serve:dist', ['build'], function() {
     browserSync.init({
         server: {
             baseDir: paths.dist
@@ -78,14 +78,14 @@ gulp.task('build', sync.sync(['clean', ['html', 'images']]));
 /**
  * build the minified html, css and js files and place them in the dist folder.
  */
-gulp.task('html', ['inject'], function () {
+gulp.task('html', ['inject'], function() {
     var htmlFilter = filter('*.html', { restore: true });
     var jsFilter = filter('**/*.js', { restore: true });
     var cssFilter = filter('**/*.css', { restore: true });
 
     return gulp.src(".tmp/*.html")
         .pipe(useref())
-    //.pipe(rev())
+        //.pipe(rev())
         .pipe(jsFilter)
         .pipe(rev())
         .pipe(uglify({ preserveComments: saveLicense }))
@@ -109,11 +109,11 @@ gulp.task('html', ['inject'], function () {
         .pipe(gulp.dest(paths.dist))
 });
 
-gulp.task('watch', ['inject'], function () {
+gulp.task('watch', ['inject'], function() {
     gulp.watch(path.join(paths.client, '/*.html'), ['inject'], browserSync.reload);
 
     //watch .css files
-    gulp.watch("client/**/*.less", function (event) {
+    gulp.watch("client/**/*.less", function(event) {
         console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
         if (isOnlyChange(event)) {
             gulp.start('less');
@@ -123,7 +123,7 @@ gulp.task('watch', ['inject'], function () {
     });
 
     //watch .js files
-    gulp.watch("client/**/*.js", function (event) {
+    gulp.watch("client/**/*.js", function(event) {
         console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
         if (isOnlyChange(event)) {
             gulp.start('scripts');
@@ -131,12 +131,12 @@ gulp.task('watch', ['inject'], function () {
             gulp.start('inject')
         }
     });
-    
+
     //watch image files
     gulp.watch('client/app/img/**/*', ['images']);
 });
 
-gulp.task('inject', ['less', 'css'], function () {
+gulp.task('inject', ['less', 'css'], function() {
     var injectStyles = gulp.src(
         paths.tmp + '**/*.css'
         , { read: false });
@@ -159,18 +159,18 @@ gulp.task('inject', ['less', 'css'], function () {
         .pipe(browserSync.stream());
 });
 
-gulp.task('scripts', function () {
+gulp.task('scripts', function() {
     return gulp.src(paths.clientApp + "**/*.js")
         .pipe(browserSync.reload);
 });
 
-gulp.task('css', function () {
+gulp.task('css', function() {
     return gulp
         .src(paths.assets + '**/*.css')
         .pipe(gulp.dest(paths.tmp));
 })
 
-gulp.task('less', function () {
+gulp.task('less', function() {
     return gulp
         .src(paths.assets + '/css/less/**/*.less')
         .pipe(plumber())
@@ -181,10 +181,10 @@ gulp.task('less', function () {
 });
 
 gulp.task('images', function() {
-   return gulp.src(paths.images)
-       .pipe(gulp.dest(paths.dist + '/img'));
+    return gulp.src(paths.images)
+        .pipe(gulp.dest(paths.dist + '/img'));
 });
 
-gulp.task('clean', function () {
+gulp.task('clean', function() {
     return del([paths.tmp, paths.dist, paths.publish]);
 });
