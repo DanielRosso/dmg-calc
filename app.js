@@ -819,6 +819,34 @@ if(typeof Bnet.D3.Tooltips == 'undefined') Bnet.D3.Tooltips = new function() { /
     }
 })();
 
+(function () {
+    'use strict'
+
+    angular
+        .module('d3dps')
+        .directive('loading', ['$http', loadingAnimation]);
+
+    function loadingAnimation($http) {
+        return {
+            restrict: 'A',
+            link: function (scope, elm, attrs) {
+
+                scope.isLoading = function () {
+                    return $http.pendingRequests.length > 0;
+                };
+
+                scope.$watch(scope.isLoading, function (v) {
+                    if (v) {
+                        elm.show();
+                    } else {
+                        elm.hide();
+                    }
+                });
+            }
+        };
+    }
+})();
+
 (function() {
     'use strict';
 
@@ -906,34 +934,6 @@ if(typeof Bnet.D3.Tooltips == 'undefined') Bnet.D3.Tooltips = new function() { /
 
         function newUpdates() {
             return vm.hasNewData;
-        };
-    }
-})();
-
-(function () {
-    'use strict'
-
-    angular
-        .module('d3dps')
-        .directive('loading', ['$http', loadingAnimation]);
-
-    function loadingAnimation($http) {
-        return {
-            restrict: 'A',
-            link: function (scope, elm, attrs) {
-
-                scope.isLoading = function () {
-                    return $http.pendingRequests.length > 0;
-                };
-
-                scope.$watch(scope.isLoading, function (v) {
-                    if (v) {
-                        elm.show();
-                    } else {
-                        elm.hide();
-                    }
-                });
-            }
         };
     }
 })();
