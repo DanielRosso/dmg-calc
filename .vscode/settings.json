@@ -2,5 +2,6 @@
 {
     "editor.fontSize": 13,
     "files.autoSave": "afterDelay",
-    "files.autoSaveDelay": 1000
+    "files.autoSaveDelay": 1500,
+    "projectManager.codePath": "C:\\Program Files (x86)\\Microsoft VS Code\\bin\\code.cmd"
 }
